@@ -41,11 +41,17 @@ public:
 	afx_msg void OnSelchangeCombo1();
 	afx_msg void OnCbnSelchangeCombo2();
 	afx_msg void OnBnClickedButtonAddPlant();
-		afx_msg void OnBnClickedButSave();
-		afx_msg void OnBnClickedButLoad();
+	afx_msg void OnBnClickedButSave();
+	afx_msg void OnBnClickedButLoad();
+	afx_msg void OnBnClickedButtonDelete();
+	afx_msg void OnBnClickedButtonCange();
+	afx_msg void OnBnClickedButtonViewData();
+
 	CComboBox m_comboBox1;
 	CComboBox m_comboBox2;
 	CComboBox m_comboBox3_Growing_area;
+	CComboBox m_comboBox_Hadlaya;
+
 
 	CEdit m_editboxName;
 	CEdit m_editboxSpeecies;
@@ -55,29 +61,25 @@ public:
 	CEdit m_editboxMorInfo;
 	CEdit m_editboxEatingSeason;
 	CEdit m_editbox_Feeding;
+	CEdit m_editbox_View_information;
 
-
+	CListCtrl m_list_control_ltems;
 //
 	CTypedPtrArray<CObArray, Plant*> plant;
+	CString m_Valu_Info_View;
 
-	//vector<Plant*> plants;
 	int Vector_Search(CString name);
-	bool Delete_Item(CString name);
-	bool Change(CString name,CString Type);
 	int Change_Flag = 0;
+
+	bool Delete_Item();
+	bool Change(CString name,CString Type);
+
+	void Reload_List_Contrl();
+
+	//זמני משתני בדיקה 
 	CString Change_Name_Typ;
 	CString Change_Typ_Typ;
 
 	
-	afx_msg void OnCbnSelchangeCombo3GrowingArea();
-	
-	afx_msg void OnCbnSelchangeCombo3Hadlaya();
-	CComboBox m_comboBox_Hadlaya;
-	afx_msg void OnBnClickedButtonDelete();
-	afx_msg void OnBnClickedButtonCange();
-	CEdit m_editbox_View_information;
-	afx_msg void OnBnClickedButtonViewData();
-	CString m_Valu_Info_View;
-	CListCtrl m_list_control_ltems;
 };
 

@@ -101,8 +101,6 @@ BEGIN_MESSAGE_MAP(CMyGardenProject2Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_ADD_PLANT, &CMyGardenProject2Dlg::OnBnClickedButtonAddPlant)
 	ON_BN_CLICKED(IDC_BUT_SAVE, &CMyGardenProject2Dlg::OnBnClickedButSave)
 	ON_BN_CLICKED(IDC_BUT_LOAD, &CMyGardenProject2Dlg::OnBnClickedButLoad)
-	ON_CBN_SELCHANGE(IDC_COMBO3_GROWING_AREA, &CMyGardenProject2Dlg::OnCbnSelchangeCombo3GrowingArea)
-	ON_CBN_SELCHANGE(IDC_COMBO3_HADLAYA, &CMyGardenProject2Dlg::OnCbnSelchangeCombo3Hadlaya)
 	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CMyGardenProject2Dlg::OnBnClickedButtonDelete)
 	ON_BN_CLICKED(IDC_BUTTON_CANGE, &CMyGardenProject2Dlg::OnBnClickedButtonCange)
 	ON_BN_CLICKED(IDC_BUTTON_VIEW_DATA, &CMyGardenProject2Dlg::OnBnClickedButtonViewData)
@@ -376,9 +374,23 @@ int CMyGardenProject2Dlg::Vector_Search(CString name) {
 }
 
 //Delete an organ from an index Returns 1 if deleted otherwise 0
-bool CMyGardenProject2Dlg::Delete_Item(CString name) {
+bool CMyGardenProject2Dlg::Delete_Item() {
 
 	CObject* path;
+	CString name = _T("");
+	int nCount = m_list_control_ltems.GetItemCount();
+
+	for (int i = nCount; i >= 0; --i)
+	{    
+		if (m_list_control_ltems.GetCheck(i))
+		{
+			name = m_list_control_ltems.GetItemText(i, 1);
+			TRACE(_T("\n"), name, _T("\n"));
+
+			m_list_control_ltems.DeleteItem(i);
+		}
+
+	}
 	int index = Vector_Search(name);
 	if ( index != -1  && (path = plant.GetAt(index)) != NULL)
 	{
@@ -389,6 +401,8 @@ bool CMyGardenProject2Dlg::Delete_Item(CString name) {
 	}
 	return 0;
 }
+
+
 
 bool CMyGardenProject2Dlg::Change(CString name, CString Type) {
 
@@ -578,27 +592,26 @@ void CMyGardenProject2Dlg::OnBnClickedButLoad()
 		plant.Serialize(ar);
 		ar.Close();
 		file.Close();
+		Reload_List_Contrl();
+	}
+
+}
+void CMyGardenProject2Dlg::Reload_List_Contrl()
+{
+	for (int i = 0; i < plant.GetSize(); i++)
+	{
+		m_list_control_ltems.InsertItem(0, _T(""));
+		m_list_control_ltems.SetItemText(0, 1, plant[i]->Get_Name());
+		m_list_control_ltems.SetItemText(0, 0, plant[i]->Return_Type());
 	}
 }
 
-//delet
-void CMyGardenProject2Dlg::OnCbnSelchangeCombo3GrowingArea()
-{
-	// TODO: Add your control notification handler code here
-}
 
-//delet
-void CMyGardenProject2Dlg::OnCbnSelchangeCombo3Hadlaya()
-{
-	// TODO: Add your control notification handler code here
-}
 
 
 void CMyGardenProject2Dlg::OnBnClickedButtonDelete()
 {
-	CString name;
-	m_editboxName.GetWindowTextW(name);
-	if (Delete_Item(name))
+	if (Delete_Item())
 	{
 		TRACE(_T("Deletion succeeded"));
 		AfxMessageBox(_T("Deletion succeeded"));

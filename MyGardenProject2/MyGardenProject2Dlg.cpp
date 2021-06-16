@@ -637,7 +637,7 @@ void CMyGardenProject2Dlg::ViewData(CString name, CString Type)
 	UpdateData(TRUE);
 	m_editbox_View_information.SetWindowTextW(_T(""));
 	CString Speecies, Breeding, Sun, Watering, MorInfo;
-	CString	EatingSeason, Planting_season, Growing_area, Feeding, Hadlaya;
+	CString	EatingSeason, Planting_season, Growing_area, Feeding, Hadlaya, Info;
 	Plant* path;
 	CString View_data;
 	int index = Vector_Search(name);
@@ -649,6 +649,7 @@ void CMyGardenProject2Dlg::ViewData(CString name, CString Type)
 		Sun = path->Get_Sun_Exposure();
 		Watering = path->Get_Watering();
 		Planting_season = path->Get_Planting_season();
+		Info = path->Get_Mor_Info();
 
 
 	switch (Type.GetLength())
@@ -656,42 +657,38 @@ void CMyGardenProject2Dlg::ViewData(CString name, CString Type)
 	case 12:
 		TRACE(_T("Edible plant\n"));
 		EatingSeason = path->Get_Information();
-		View_data += _T(" ζο: ") + Speecies + _T(" :ων ") + name + _T("\n") ;
-		m_editbox_View_information.SetWindowTextW(View_data);
-		UpdateData(TRUE);
-		//	View_data.Format("name: %s,\r\nspess: % s\r\n"),Name, Speecies);
-		UpdateData(FALSE);
+		View_data.Format(_T("Name: %s\r\nSpeecies: %s\r\nBreeding ground: %s\r\nSun exposure: %s\r\nWatering: %s\r\nPlanting season: %s\r\nEating Season: %s\r\nMore info: %s\r\n"), name, Speecies, Breeding, Sun, Watering, Planting_season, EatingSeason, Info);
+
+		
+		//UpdateData(FALSE);
 		break;
 		//"Carnivorous plant"
 	case 17:
 		TRACE(_T("Carnivorous plant"));
 		Growing_area = path->Get_Father_Information();
 		Feeding = path->Get_Information();
+		View_data.Format(_T("Name: %s\r\nSpeecies: %s\r\nBreeding ground: %s\r\nSun exposure: %s\r\nWatering: %s\r\nPlanting season: %s\r\nGrowing area: %s\r\nFeeding: %s\r\nMore info: %s\r\n"), name, Speecies, Breeding, Sun, Watering, Planting_season, Growing_area, Feeding,Info);
 		break;
 		//"A climbing plant"
 	case 16:
 		TRACE(_T("A climbing plant"));
 		Growing_area = path->Get_Father_Information();
 		Hadlaya = path->Get_Information();
+		View_data.Format(_T("Name: %s\r\nSpeecies: %s\r\nBreeding ground: %s\r\nSun exposure: %s\r\nWatering: %s\r\nPlanting season: %s\r\nGrowing area: %s\r\nMethod of Hadlaya: %s\r\nMore info: %s\r\n"), name, Speecies, Breeding, Sun, Watering, Planting_season, Growing_area, Hadlaya, Info);
+
 		break;
 		//"An ornamental plant"
 	case 19:
 		TRACE(_T("An ornamental plant"));
-		break;
 		Growing_area = path->Get_Information();
+		View_data.Format(_T("Name: %s\r\nSpeecies: %s\r\nBreeding ground: %s\r\nSun exposure: %s\r\nWatering: %s\r\nPlanting season: %s\r\nGrowing area: %s\r\nMore info: %s\r\n"), name, Speecies, Breeding, Sun, Watering, Planting_season, Growing_area, Info);
+		break;
 	default:
 		// code block
 		break;
-	}
-
-
-	CString a, b, myString = _T("This is a test");
-	a = myString;
-	a += _T("\n") + myString;
-
-
-	
-	
+	}	
+	m_editbox_View_information.SetWindowTextW(View_data);
+	UpdateData(TRUE);
 }
 
 void CMyGardenProject2Dlg::OnBnClickedButtonViewData()

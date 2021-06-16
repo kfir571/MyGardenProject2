@@ -96,8 +96,6 @@ BEGIN_MESSAGE_MAP(CMyGardenProject2Dlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDCANCEL, &CMyGardenProject2Dlg::OnBnClickedCancel)
 
-	ON_CBN_SELCHANGE(IDC_COMBO1, &CMyGardenProject2Dlg::OnSelchangeCombo1)
-	ON_CBN_SELCHANGE(IDC_COMBO2, &CMyGardenProject2Dlg::OnCbnSelchangeCombo2)
 	ON_BN_CLICKED(IDC_BUTTON_ADD_PLANT, &CMyGardenProject2Dlg::OnBnClickedButtonAddPlant)
 	ON_BN_CLICKED(IDC_BUT_SAVE, &CMyGardenProject2Dlg::OnBnClickedButSave)
 	ON_BN_CLICKED(IDC_BUT_LOAD, &CMyGardenProject2Dlg::OnBnClickedButLoad)
@@ -141,18 +139,9 @@ BOOL CMyGardenProject2Dlg::OnInitDialog()
 	// TODO: Add extra initialization here
 	DWORD dwExStyle = m_list_control_ltems.GetExtendedStyle();
 	m_list_control_ltems.SetExtendedStyle(dwExStyle | LVS_EX_CHECKBOXES | LVS_EX_BORDERSELECT);
-	m_list_control_ltems.InsertColumn(0, _T("Type"), LVCFMT_CENTER, 100);
-	m_list_control_ltems.InsertColumn(1, _T("Name"), LVCFMT_CENTER, 100);
+	m_list_control_ltems.InsertColumn(0, _T("Type"), LVCFMT_CENTER, 150);
+	m_list_control_ltems.InsertColumn(1, _T("Name"), LVCFMT_CENTER, 150);
 	m_list_control_ltems.ModifyStyle(LVS_TYPEMASK, LVS_REPORT); // מוסיף לסופית את העמודות
-
-
-	//m_list_control_ltems.SetItemText(0, 0, _T("0,0"));
-	//m_list_control_ltems.SetItemText(0, 1, _T("0,1"));
-
-	//m_list_control_ltems.InsertItem(1, _T("fdgfd"));
-
-	//m_list_control_ltems.SetItemText(1, 0, _T("1,0"));
-	//m_list_control_ltems.SetItemText(1, 1, _T("1,1"));
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -208,7 +197,6 @@ void CMyGardenProject2Dlg::OnPaint()
 	}
 }
 
-
 // The system calls this function to obtain the cursor to display while the user drags
 //  the minimized window.
 HCURSOR CMyGardenProject2Dlg::OnQueryDragIcon()
@@ -216,33 +204,20 @@ HCURSOR CMyGardenProject2Dlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-
-
 void CMyGardenProject2Dlg::OnBnClickedCancel()
 {
 	// TODO: Add your control notification handler code here
-	CDialogEx::OnCancel();
-}
-
-
-
-void CMyGardenProject2Dlg::OnSelchangeCombo1()
-{
-	// TODO: Add your control notification handler code here
-}
-
-
-void CMyGardenProject2Dlg::OnCbnSelchangeCombo2()
-{
-
-	int combobox2SelctedItem = m_comboBox2.GetCurSel();
-	if (combobox2SelctedItem !=LB_ERR)
+	static int loop = 1;
+	if (Save_Flag == 0 && loop == 1)
 	{
-		CString str;
-		m_comboBox2.GetLBText(combobox2SelctedItem, str);
+		AfxMessageBox(_T("The file is not saved"));
+		loop--;
+	}
+	else
+	{
+		CDialogEx::OnCancel();
 	}
 }
-
 
 void CMyGardenProject2Dlg::OnBnClickedButtonAddPlant()
 {
@@ -358,7 +333,6 @@ void CMyGardenProject2Dlg::OnBnClickedButtonAddPlant()
 	
 }
 
-
 //Returns the position in the vector, otherwise returns -1
 int CMyGardenProject2Dlg::Vector_Search(CString name) {
 	int to_return = -1;
@@ -377,20 +351,19 @@ int CMyGardenProject2Dlg::Vector_Search(CString name) {
 bool CMyGardenProject2Dlg::Delete_Item() {
 
 	CObject* path;
-	CString name = _T("");
+	CString name;
 	int nCount = m_list_control_ltems.GetItemCount();
 
 	for (int i = nCount; i >= 0; --i)
-	{    
+	{
 		if (m_list_control_ltems.GetCheck(i))
 		{
 			name = m_list_control_ltems.GetItemText(i, 1);
-			TRACE(_T("\n"), name, _T("\n"));
-
 			m_list_control_ltems.DeleteItem(i);
 		}
 
 	}
+
 	int index = Vector_Search(name);
 	if ( index != -1  && (path = plant.GetAt(index)) != NULL)
 	{
@@ -401,8 +374,6 @@ bool CMyGardenProject2Dlg::Delete_Item() {
 	}
 	return 0;
 }
-
-
 
 bool CMyGardenProject2Dlg::Change(CString name, CString Type) {
 
@@ -575,10 +546,10 @@ void CMyGardenProject2Dlg::OnBnClickedButSave()
 		plant.Serialize(ar);
 		ar.Close();
 		file.Close();
+		Save_Flag = 1;
 		
 	}
 }
-
 
 void CMyGardenProject2Dlg::OnBnClickedButLoad()
 {
@@ -596,8 +567,10 @@ void CMyGardenProject2Dlg::OnBnClickedButLoad()
 	}
 
 }
+
 void CMyGardenProject2Dlg::Reload_List_Contrl()
 {
+	m_list_control_ltems.DeleteAllItems();
 	for (int i = 0; i < plant.GetSize(); i++)
 	{
 		m_list_control_ltems.InsertItem(0, _T(""));
@@ -606,16 +579,12 @@ void CMyGardenProject2Dlg::Reload_List_Contrl()
 	}
 }
 
-
-
-
 void CMyGardenProject2Dlg::OnBnClickedButtonDelete()
 {
 	if (Delete_Item())
 	{
 		TRACE(_T("Deletion succeeded"));
 		AfxMessageBox(_T("Deletion succeeded"));
-		
 	}
 	else
 	{
@@ -624,44 +593,26 @@ void CMyGardenProject2Dlg::OnBnClickedButtonDelete()
 	}
 }
 
-
 void CMyGardenProject2Dlg::OnBnClickedButtonCange()
 {
+	CString Name;
+	CString Type;
+	
+	Return_Name_and_Type(&Name, &Type);
 
-	CString name, Plant_type;
-
-	int combobox2SelctedItem = m_comboBox2.GetCurSel();	m_editboxName.GetWindowTextW(name);
-
-	if (combobox2SelctedItem != LB_ERR && name != "")
-	{
-		
-		m_comboBox2.GetLBText(combobox2SelctedItem, Plant_type);
-
-		if (Change(name,Plant_type))
-		{
-			AfxMessageBox(_T("Change Secses"));
-			TRACE(_T("Change Secses"));
-		}
-		else
-		{
-			AfxMessageBox(_T("Change failed"));
-			TRACE(_T("Change failed"));
-		}
-	}
-	else
-	{
-		AfxMessageBox(_T("נא למלא את השדות של סוג הצמח\n ושם הצמח"));
-	}
-
+	Change(Name, Type);
 }
-
-
-void CMyGardenProject2Dlg::OnBnClickedButtonViewData()
+/// <summary>
+/// // workkkkkk
+/// </summary>
+/// <param name="name"></param>
+/// <param name="Type"></param>
+void CMyGardenProject2Dlg::ViewData(CString name, CString Type)
 {
 	CString Name, Speecies, Breeding, Sun, Watering, MorInfo;
 	CString	EatingSeason, Plant_type, Planting_season, Growing_area, Feeding, Hadlaya;
 	Plant* path;
-	CString name, View_data;
+	CString View_data;
 	m_editboxName.GetWindowTextW(name);
 	int index = Vector_Search(name);
 	int combobox2SelctedItem = m_comboBox2.GetCurSel();
@@ -669,7 +620,7 @@ void CMyGardenProject2Dlg::OnBnClickedButtonViewData()
 	{
 		m_comboBox2.GetWindowTextW(Plant_type);
 		path = plant.GetAt(index);
-		
+
 		Name = path->Get_Name();
 		Speecies = path->Get_Species();
 		Breeding = path->Get_Breeding_Grund();
@@ -685,10 +636,10 @@ void CMyGardenProject2Dlg::OnBnClickedButtonViewData()
 		case 12:
 			TRACE(_T("Edible plant\n"));
 			EatingSeason = path->Get_Information();
-			View_data += _T(":שם") + Name+ _T("\n") + _T("זן:") + Speecies ;
+			View_data += _T(":שם") + Name + _T("\n") + _T("זן:") + Speecies;
 			UpdateData(TRUE);
-		//	View_data.Format("name: %s,\r\nspess: % s\r\n"),Name, Speecies);
-				UpdateData(FALSE);
+			//	View_data.Format("name: %s,\r\nspess: % s\r\n"),Name, Speecies);
+			UpdateData(FALSE);
 			break;
 			//"Carnivorous plant"
 		case 17:
@@ -719,5 +670,25 @@ void CMyGardenProject2Dlg::OnBnClickedButtonViewData()
 
 
 	}
+	
+}
+
+void CMyGardenProject2Dlg::Return_Name_and_Type(CString* name, CString* Type)
+{
+	int nCount = m_list_control_ltems.GetItemCount();
+
+	for (int i = nCount; i >= 0; --i)
+	{
+		if (m_list_control_ltems.GetCheck(i))
+		{
+			*name = m_list_control_ltems.GetItemText(i, 1);
+			*Type = m_list_control_ltems.GetItemText(i, 0);
+		}
+	}
+}
+
+void CMyGardenProject2Dlg::OnBnClickedButtonViewData()
+{
+
 
 }

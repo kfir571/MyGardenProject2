@@ -38,8 +38,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedCancel();
-	afx_msg void OnSelchangeCombo1();
-	afx_msg void OnCbnSelchangeCombo2();
 	afx_msg void OnBnClickedButtonAddPlant();
 	afx_msg void OnBnClickedButSave();
 	afx_msg void OnBnClickedButLoad();
@@ -70,11 +68,14 @@ public:
 
 	int Vector_Search(CString name);
 	int Change_Flag = 0;
+	int Save_Flag = 0;
 
 	bool Delete_Item();
 	bool Change(CString name,CString Type);
 
 	void Reload_List_Contrl();
+	void ViewData(CString name, CString Type);
+	void Return_Name_and_Type(CString* name, CString* Type);//מחזיר את השם והסוג הצמח by referns
 
 	//זמני משתני בדיקה 
 	CString Change_Name_Typ;

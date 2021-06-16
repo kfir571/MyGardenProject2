@@ -210,7 +210,7 @@ void CMyGardenProject2Dlg::OnBnClickedCancel()
 	static int loop = 1;
 	if (Save_Flag == 0 && loop == 1)
 	{
-		AfxMessageBox(_T("The file is not saved"));
+		AfxMessageBox(_T("The file is not saved,\n If you close again the file will not be saved!"));
 		loop--;
 	}
 	else
@@ -348,21 +348,9 @@ int CMyGardenProject2Dlg::Vector_Search(CString name) {
 }
 
 //Delete an organ from an index Returns 1 if deleted otherwise 0
-bool CMyGardenProject2Dlg::Delete_Item() {
+bool CMyGardenProject2Dlg::Delete_Item(CString name) {
 
 	CObject* path;
-	CString name;
-	int nCount = m_list_control_ltems.GetItemCount();
-
-	for (int i = nCount; i >= 0; --i)
-	{
-		if (m_list_control_ltems.GetCheck(i))
-		{
-			name = m_list_control_ltems.GetItemText(i, 1);
-			m_list_control_ltems.DeleteItem(i);
-		}
-
-	}
 
 	int index = Vector_Search(name);
 	if ( index != -1  && (path = plant.GetAt(index)) != NULL)
@@ -380,6 +368,7 @@ bool CMyGardenProject2Dlg::Change(CString name, CString Type) {
 	Plant* path;
 	int index = Vector_Search(name);
 	int combobox1SelctedItem = m_comboBox1.GetCurSel();
+	int combobox2SelctedItem = m_comboBox2.GetCurSel();
 
 	if (Change_Flag == 0 && index != -1)
 	{
@@ -400,6 +389,7 @@ bool CMyGardenProject2Dlg::Change(CString name, CString Type) {
 			m_editboxWatering.SetWindowTextW(path->Get_Watering());
 			m_editboxMorInfo.SetWindowTextW(path->Get_Mor_Info());/////// לא עובד
 			m_comboBox1.SetWindowTextW(path->Get_Planting_season());
+			m_comboBox2.SetWindowTextW(Type);
 		
 			switch (Type.GetLength())
 			{
@@ -443,7 +433,7 @@ bool CMyGardenProject2Dlg::Change(CString name, CString Type) {
 		path = plant.GetAt(index);
 
 		CString Name, Speecies, Breeding, Sun, Watering, MorInfo,
-			    EatingSeason, Plant_type, Planting_season, Growing_area, Feeding, Hadlaya;
+			    EatingSeason, Plant_type_cange, Planting_season, Growing_area, Feeding, Hadlaya;
 
 		
 		combobox1SelctedItem = m_comboBox1.GetCurSel();
@@ -467,13 +457,19 @@ bool CMyGardenProject2Dlg::Change(CString name, CString Type) {
 		path->Set_Watering(Watering);
 
 		m_comboBox1.GetWindowTextW(Planting_season);
-		path->Set_Planting_season(Planting_season);
 		
+		path->Set_Planting_season(Planting_season);
 
 
-		m_editboxMorInfo.GetWindowTextW(MorInfo);////////////לא עובד
+		m_editboxMorInfo.GetWindowTextW(MorInfo);
 		path->Set_Mor_Info(MorInfo);
-
+		
+		m_comboBox2.GetWindowTextW(Plant_type_cange);
+		if (Plant_type_cange != Type)
+		{
+			AfxMessageBox(_T("The type of plant can not be changed"));
+		}
+		
 		switch (Type.GetLength())
 		{
 		case 12:
@@ -528,8 +524,9 @@ bool CMyGardenProject2Dlg::Change(CString name, CString Type) {
 		m_editbox_Feeding.SetWindowTextW(_T(""));
 		
 		Change_Flag = 0;
-		return 1;
+		Reload_List_Contrl();
 
+		return 1;
 	}
 	return 0;
 }
@@ -581,16 +578,29 @@ void CMyGardenProject2Dlg::Reload_List_Contrl()
 
 void CMyGardenProject2Dlg::OnBnClickedButtonDelete()
 {
-	if (Delete_Item())
+	CString name;
+	int nCount = m_list_control_ltems.GetItemCount();
+
+	for (int i = nCount; i >= 0; --i)
 	{
-		TRACE(_T("Deletion succeeded"));
-		AfxMessageBox(_T("Deletion succeeded"));
+		if (m_list_control_ltems.GetCheck(i))
+		{
+			name = m_list_control_ltems.GetItemText(i, 1);
+			m_list_control_ltems.DeleteItem(i);
+
+			if (Delete_Item(name) && name != L"")
+			{
+				TRACE(_T("Deletion succeeded\n"));
+			}
+			else if(name != L"")
+			{
+				AfxMessageBox(_T("Deletion failed\n"));
+				TRACE(_T("Deletion failed"));
+			}
+		}
+
 	}
-	else
-	{
-		AfxMessageBox(_T("Deletion failed"));
-		TRACE(_T("Deletion failed"));
-	}
+
 }
 
 void CMyGardenProject2Dlg::OnBnClickedButtonCange()
@@ -601,76 +611,6 @@ void CMyGardenProject2Dlg::OnBnClickedButtonCange()
 	Return_Name_and_Type(&Name, &Type);
 
 	Change(Name, Type);
-}
-/// <summary>
-/// // workkkkkk
-/// </summary>
-/// <param name="name"></param>
-/// <param name="Type"></param>
-void CMyGardenProject2Dlg::ViewData(CString name, CString Type)
-{
-	CString Name, Speecies, Breeding, Sun, Watering, MorInfo;
-	CString	EatingSeason, Plant_type, Planting_season, Growing_area, Feeding, Hadlaya;
-	Plant* path;
-	CString View_data;
-	m_editboxName.GetWindowTextW(name);
-	int index = Vector_Search(name);
-	int combobox2SelctedItem = m_comboBox2.GetCurSel();
-	if (combobox2SelctedItem != LB_ERR && index != -1)
-	{
-		m_comboBox2.GetWindowTextW(Plant_type);
-		path = plant.GetAt(index);
-
-		Name = path->Get_Name();
-		Speecies = path->Get_Species();
-		Breeding = path->Get_Breeding_Grund();
-		Sun = path->Get_Sun_Exposure();
-		Watering = path->Get_Watering();
-		Planting_season = path->Get_Planting_season();
-
-
-
-
-		switch (Plant_type.GetLength())
-		{
-		case 12:
-			TRACE(_T("Edible plant\n"));
-			EatingSeason = path->Get_Information();
-			View_data += _T(":שם") + Name + _T("\n") + _T("זן:") + Speecies;
-			UpdateData(TRUE);
-			//	View_data.Format("name: %s,\r\nspess: % s\r\n"),Name, Speecies);
-			UpdateData(FALSE);
-			break;
-			//"Carnivorous plant"
-		case 17:
-			TRACE(_T("Carnivorous plant"));
-			Growing_area = path->Get_Father_Information();
-			Feeding = path->Get_Information();
-			break;
-			//"A climbing plant"
-		case 16:
-			TRACE(_T("A climbing plant"));
-			Growing_area = path->Get_Father_Information();
-			Hadlaya = path->Get_Information();
-			break;
-			//"An ornamental plant"
-		case 19:
-			TRACE(_T("An ornamental plant"));
-			break;
-			Growing_area = path->Get_Information();
-		default:
-			// code block
-			break;
-		}
-
-
-		CString a, b, myString = _T("This is a test");
-		a = myString;
-		a += _T("\n") + myString;
-
-
-	}
-	
 }
 
 void CMyGardenProject2Dlg::Return_Name_and_Type(CString* name, CString* Type)
@@ -687,8 +627,76 @@ void CMyGardenProject2Dlg::Return_Name_and_Type(CString* name, CString* Type)
 	}
 }
 
+/// <summary>
+/// // workkkkkk
+/// </summary>
+/// <param name="name"></param>
+/// <param name="Type"></param>
+void CMyGardenProject2Dlg::ViewData(CString name, CString Type)
+{
+	UpdateData(TRUE);
+	m_editbox_View_information.SetWindowTextW(_T(""));
+	CString Speecies, Breeding, Sun, Watering, MorInfo;
+	CString	EatingSeason, Planting_season, Growing_area, Feeding, Hadlaya;
+	Plant* path;
+	CString View_data;
+	int index = Vector_Search(name);
+	
+		path = plant.GetAt(index);
+
+		Speecies = path->Get_Species();
+		Breeding = path->Get_Breeding_Grund();
+		Sun = path->Get_Sun_Exposure();
+		Watering = path->Get_Watering();
+		Planting_season = path->Get_Planting_season();
+
+
+	switch (Type.GetLength())
+	{
+	case 12:
+		TRACE(_T("Edible plant\n"));
+		EatingSeason = path->Get_Information();
+		View_data += _T(" זן: ") + Speecies + _T(" :שם ") + name + _T("\n") ;
+		m_editbox_View_information.SetWindowTextW(View_data);
+		UpdateData(TRUE);
+		//	View_data.Format("name: %s,\r\nspess: % s\r\n"),Name, Speecies);
+		UpdateData(FALSE);
+		break;
+		//"Carnivorous plant"
+	case 17:
+		TRACE(_T("Carnivorous plant"));
+		Growing_area = path->Get_Father_Information();
+		Feeding = path->Get_Information();
+		break;
+		//"A climbing plant"
+	case 16:
+		TRACE(_T("A climbing plant"));
+		Growing_area = path->Get_Father_Information();
+		Hadlaya = path->Get_Information();
+		break;
+		//"An ornamental plant"
+	case 19:
+		TRACE(_T("An ornamental plant"));
+		break;
+		Growing_area = path->Get_Information();
+	default:
+		// code block
+		break;
+	}
+
+
+	CString a, b, myString = _T("This is a test");
+	a = myString;
+	a += _T("\n") + myString;
+
+
+	
+	
+}
+
 void CMyGardenProject2Dlg::OnBnClickedButtonViewData()
 {
-
-
+	CString Name, Type;
+	Return_Name_and_Type(&Name, &Type);
+	ViewData(Name, Type);
 }

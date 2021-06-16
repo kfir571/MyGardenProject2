@@ -100,6 +100,8 @@ void Plant::Serialize(CArchive& archive)
 		archive << Breeding_Grund;
 		archive << Sun_Exposure;			
 		archive << Watering;
+		archive << Planting_season;
+		archive << Info;
 	}
 	else		
 	{
@@ -108,5 +110,7 @@ void Plant::Serialize(CArchive& archive)
 		archive >> Breeding_Grund;
 		archive >> Sun_Exposure;
 		archive >> Watering;
+		archive >> Planting_season;
+		archive >> Info;
 	}
 }

@@ -70,7 +70,7 @@ public:
 	int Change_Flag = 0;
 	int Save_Flag = 0;
 
-	bool Delete_Item();
+	bool Delete_Item(CString name);
 	bool Change(CString name,CString Type);
 
 	void Reload_List_Contrl();

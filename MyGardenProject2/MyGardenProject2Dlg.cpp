@@ -262,6 +262,7 @@ void CMyGardenProject2Dlg::OnBnClickedButtonAddPlant()
 				m_list_control_ltems.SetItemText(0, 0, _T("Edible plant"));
 			//	plants.push_back(new Edible(Name, Speecies, Breeding, Sun, Watering));
 				plant.Add(new Edible(Name, Speecies, Breeding, Sun, Watering, Planting_season, EatingSeason, MorInfo));
+				Save_Flag = 0;
 				break;
 				//"Carnivorous plant"
 			case 17:
@@ -271,7 +272,7 @@ void CMyGardenProject2Dlg::OnBnClickedButtonAddPlant()
 				combobox3SelctedItem = m_comboBox3_Growing_area.GetCurSel();
 				m_comboBox3_Growing_area.GetLBText(combobox2SelctedItem, Growing_area);
 				plant.Add(new Carnivorous_plant(Name, Speecies, Breeding, Sun, Watering, Planting_season, Growing_area, Feeding, MorInfo));
-				//plant[plant.GetCount() - 1]->Get_Hadlaya;
+				Save_Flag = 0;
 				break;
 
 				//"A climbing plant"
@@ -283,6 +284,7 @@ void CMyGardenProject2Dlg::OnBnClickedButtonAddPlant()
 				combobox3SelctedItem = m_comboBox3_Growing_area.GetCurSel();
 				m_comboBox3_Growing_area.GetLBText(combobox2SelctedItem, Growing_area);
 				plant.Add(new Climbing_Plant(Name, Speecies, Breeding, Sun, Watering, Planting_season, Growing_area,Hadlaya, MorInfo));
+				Save_Flag = 0;
 				break;
 				//"An ornamental plant"
 			case 19:
@@ -291,9 +293,8 @@ void CMyGardenProject2Dlg::OnBnClickedButtonAddPlant()
 				combobox3SelctedItem = m_comboBox3_Growing_area.GetCurSel();
 				m_comboBox3_Growing_area.GetLBText(combobox2SelctedItem, Growing_area);
 				plant.Add(new Ornamental(Name, Speecies, Breeding, Sun, Watering, Planting_season, Growing_area, MorInfo));
+				Save_Flag = 0;
 				break;
-
-
 			default:
 				// code block
 				break;
@@ -327,10 +328,6 @@ void CMyGardenProject2Dlg::OnBnClickedButtonAddPlant()
 		AfxMessageBox(_T("נא למלא את כול השדות"));
 		
 	}
-
-
-
-	
 }
 
 //Returns the position in the vector, otherwise returns -1
@@ -627,11 +624,6 @@ void CMyGardenProject2Dlg::Return_Name_and_Type(CString* name, CString* Type)
 	}
 }
 
-/// <summary>
-/// // workkkkkk
-/// </summary>
-/// <param name="name"></param>
-/// <param name="Type"></param>
 void CMyGardenProject2Dlg::ViewData(CString name, CString Type)
 {
 	UpdateData(TRUE);
@@ -695,5 +687,8 @@ void CMyGardenProject2Dlg::OnBnClickedButtonViewData()
 {
 	CString Name, Type;
 	Return_Name_and_Type(&Name, &Type);
-	ViewData(Name, Type);
+	if (Name != L"")
+	{
+		ViewData(Name, Type);
+	}
 }

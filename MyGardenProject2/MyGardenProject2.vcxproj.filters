@@ -19,6 +19,9 @@
     <Filter Include="Source Files\My_Cpp">
       <UniqueIdentifier>{9d0dd761-b6fa-4eb6-88fa-e114b4a381fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Icon">
+      <UniqueIdentifier>{7616ef08-8df9-4e00-a7e0-f214acddbf34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyGardenProject2.h">
@@ -93,6 +96,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\MyGardenProject2.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Downloads\FireShot\Tomato icon.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

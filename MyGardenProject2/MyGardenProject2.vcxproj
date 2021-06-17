@@ -217,6 +217,7 @@
     <None Include="res\MyGardenProject2.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\Downloads\FireShot\Tomato icon.png" />
     <Image Include="res\MyGardenProject2.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

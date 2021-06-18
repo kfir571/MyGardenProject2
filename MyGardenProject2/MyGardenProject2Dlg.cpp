@@ -208,10 +208,10 @@ void CMyGardenProject2Dlg::OnBnClickedCancel()
 {
 	// TODO: Add your control notification handler code here
 	static int loop = 1;
-	if (Save_Flag == 0 && loop == 1)
+	if (Save_Flag == 0)
 	{
 		AfxMessageBox(_T("The file is not saved,\n If you close again the file will not be saved!"));
-		loop--;
+		Save_Flag = 1;
 	}
 	else
 	{

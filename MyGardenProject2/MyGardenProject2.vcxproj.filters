@@ -101,5 +101,8 @@
     <Image Include="..\..\..\..\Downloads\FireShot\Tomato icon.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\IMG_4499-1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

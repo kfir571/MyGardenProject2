@@ -354,6 +354,7 @@ bool CMyGardenProject2Dlg::Delete_Item(CString name) {
 	{
 		plant.RemoveAt(index);
 		delete path;
+		
 
 		return 1;
 	}
@@ -484,7 +485,6 @@ bool CMyGardenProject2Dlg::Change(CString name, CString Type) {
 			path->Set_Father_Information(Growing_area);
 			m_editbox_Feeding.GetWindowTextW(Feeding);
 			path->Set_Information(Feeding);
-			//m_editbox_Feeding.SetWindowTextW(path->Get_Planting_season())
 			break;
 			//"A climbing plant"
 		case 16:
@@ -500,7 +500,6 @@ bool CMyGardenProject2Dlg::Change(CString name, CString Type) {
 			break;
 			m_comboBox3_Growing_area.GetWindowTextW(Growing_area);
 			path->Set_Information(Growing_area);
-
 		default:
 			// code block
 			break;
@@ -520,6 +519,7 @@ bool CMyGardenProject2Dlg::Change(CString name, CString Type) {
 		m_comboBox_Hadlaya.SetWindowTextW(_T(""));
 		m_editbox_Feeding.SetWindowTextW(_T(""));
 		
+		Save_Flag = 0;
 		Change_Flag = 0;
 		Reload_List_Contrl();
 
@@ -588,6 +588,7 @@ void CMyGardenProject2Dlg::OnBnClickedButtonDelete()
 			if (Delete_Item(name) && name != L"")
 			{
 				TRACE(_T("Deletion succeeded\n"));
+				Save_Flag = 0;
 			}
 			else if(name != L"")
 			{
@@ -650,9 +651,6 @@ void CMyGardenProject2Dlg::ViewData(CString name, CString Type)
 		TRACE(_T("Edible plant\n"));
 		EatingSeason = path->Get_Information();
 		View_data.Format(_T("Name: %s\r\nSpeecies: %s\r\nBreeding ground: %s\r\nSun exposure: %s\r\nWatering: %s\r\nPlanting season: %s\r\nEating Season: %s\r\nMore info: %s\r\n"), name, Speecies, Breeding, Sun, Watering, Planting_season, EatingSeason, Info);
-
-		
-		//UpdateData(FALSE);
 		break;
 		//"Carnivorous plant"
 	case 17:
@@ -667,7 +665,6 @@ void CMyGardenProject2Dlg::ViewData(CString name, CString Type)
 		Growing_area = path->Get_Father_Information();
 		Hadlaya = path->Get_Information();
 		View_data.Format(_T("Name: %s\r\nSpeecies: %s\r\nBreeding ground: %s\r\nSun exposure: %s\r\nWatering: %s\r\nPlanting season: %s\r\nGrowing area: %s\r\nMethod of Hadlaya: %s\r\nMore info: %s\r\n"), name, Speecies, Breeding, Sun, Watering, Planting_season, Growing_area, Hadlaya, Info);
-
 		break;
 		//"An ornamental plant"
 	case 19:
